@@ -5,15 +5,38 @@
 conda env create -f environment_gpu.yml -p ./env-gpu
 conda activate ./env-gpu
 
-# 9) Añadir solo MEGA (como carpeta normal o submódulo; recomendado submódulo)
+# 9) Añadir solo MEGA (como submódulo)
 git submodule add https://github.com/Scalsol/mega.pytorch.git external/mega.pytorch
 git commit -m "Add MEGA as submodule"
+
+
+# instalar MEGA (ajuste del lab: sin --cuda_ext/--cpp_ext)Activar el entorno y comprobar CUDA
+python -V
+python -c "import torch; print('torch', torch.__version__, 'cuda?', torch.cuda.is_available())"
+# esperado: torch 1.2.0 y cuda? True
 
 # 10) Instalar MEGA
 cd external/mega.pytorch
 python setup.py build_ext install
-cd ../../
+cd ../../ # vuelve a la raíz del repo
 
 # 11) Carpetas locales
 mkdir -p checkpoints images results
-# (pon aquí tus .pth e imágenes)
+# pon en checkpoints/ los .pth de BASE y MEGA
+# pon en images/ tu carpeta de imágenes de prueba
+
+# Añadir aqui tam ien los ficheros descargados 
+
+# MEGA (R101)
+python demo/inference.py \
+  --config configs/mega_r101.yaml \
+  --image_folder ../../images \
+  --ckpt ../../checkpoints/MEGA_R_101.pth \
+  --output ../../results/mega_run
+
+# Baseline (R101)
+python demo/inference.py \
+  --config configs/base_r101.yaml \
+  --image_folder ../../images \
+  --ckpt ../../checkpoints/R_101.pth \
+  --output ../../results/base_run
