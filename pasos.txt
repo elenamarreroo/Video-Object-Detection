@@ -1,0 +1,19 @@
+# 7) Inicializar conda si hace falta (una sola vez por shell)
+# conda init zsh  # o bash/powershell según tu caso; luego reinicia shell
+
+# 8) Crear entorno local dentro del repo y activarlo
+conda env create -f environment_gpu.yml -p ./env-gpu
+conda activate ./env-gpu
+
+# 9) Añadir solo MEGA (como carpeta normal o submódulo; recomendado submódulo)
+git submodule add https://github.com/Scalsol/mega.pytorch.git external/mega.pytorch
+git commit -m "Add MEGA as submodule"
+
+# 10) Instalar MEGA
+cd external/mega.pytorch
+python setup.py build_ext install
+cd ../../
+
+# 11) Carpetas locales
+mkdir -p checkpoints images results
+# (pon aquí tus .pth e imágenes)
